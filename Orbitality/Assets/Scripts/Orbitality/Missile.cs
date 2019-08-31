@@ -61,7 +61,7 @@ namespace Orbitality
         public void Stop()
         {
             _isAccelerating = false;
-            _collider2D.enabled = false;
+            //_collider2D.enabled = false;
             _rigidbody2D.velocity = Vector2.zero;
             _rigidbody2D.angularVelocity = 0;
         }
@@ -69,7 +69,7 @@ namespace Orbitality
         public void Fire()
         {
             _isAccelerating = true;
-            _collider2D.enabled = true;
+            //_collider2D.enabled = true;
         }
 
         public void FixedUpdate()

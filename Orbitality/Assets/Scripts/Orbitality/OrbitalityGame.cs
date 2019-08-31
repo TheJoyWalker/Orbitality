@@ -56,14 +56,25 @@ namespace Orbitality
 
         private void GeneratePlanets()
         {
-            _planets = _planetGenerator.Generate(_settings.MaxPlanets, _settings)
-                                       .Select(x => new Planet(x, _planetPool.Spawn(v =>
-                                                                                    {
-                                                                                        v.transform.parent = transform;
-                                                                                        v.Resources = _planetResources;
-                                                                                        v.Radius = x.Radius;
-                                                                                        v.SkinId = GetFreeSkinId();
-                                                                                    }))).ToList();
+            var skinIdxsTemp = Enumerable.Range(0, _planetResources.Skins.Length - 1).ToList();
+            var planetCount = _settings.MaxPlanets;
+            var skinIdxs = new int[planetCount];
+
+            for (int i = 0; i < planetCount; i++)
+            {
+                int idx = Random.Range(0, skinIdxsTemp.Count);
+                skinIdxs[i] = skinIdxsTemp[idx];
+                skinIdxsTemp.RemoveAt(idx);
+            }
+
+            _planets = _planetGenerator.Generate(planetCount, _settings)
+                                       .Select((x, idx) => new Planet(x, _planetPool.Spawn(v =>
+                                                                                     {
+                                                                                         v.transform.parent = transform;
+                                                                                         v.Resources = _planetResources;
+                                                                                         v.Radius = x.Radius;
+                                                                                         v.SkinId = skinIdxs[idx];
+                                                                                     }))).ToList();
         }
 
 
@@ -80,7 +91,7 @@ namespace Orbitality
             //todo: consider this later
             var freeSkins = _planetResources.Skins.Where((skin, idx) =>
                                                          {
-                                                             return _planets.Any(data => data.PlanetData.SkinId == idx);
+                                                             return _planets.All(data => data.PlanetData.SkinId != idx);
                                                          }).ToList();
             return Random.Range(0, freeSkins.Count);
         }
@@ -107,13 +118,17 @@ namespace Orbitality
             _parent = parent;
         }
 
-        public Missile CreateMissile(int type, Planet planet)
+        public Missile CreateMissile(int type, Planet planet, Vector2 aimPoint)
         {
-            var missile = _pools[type].Spawn((x) => x.SpawnReset());
-            missile.transform.parent = _parent;
-            missile.Id = type;
+            var missile = _pools[type].Spawn((x) =>
+                                             {
+                                                 x.transform.parent = _parent;
+                                                 x.SpawnReset();
+                                                 x.Id = type;
+                                                 x.Owner = planet;
+                                                 AimAt(x, aimPoint);
+                                             });
             missile.Die(20f);
-            missile.Owner = planet;
             _missiles.Add(missile);
             return missile;
         }
@@ -163,15 +178,11 @@ namespace Orbitality
             _transformer = transformer;
             Planet = planet;
         }
-        public void OnPointerDown(Vector3 worldHitPoint)
-        {
-            _missile = _aimController.CreateMissile(Planet.PlanetData.WeaponType, Planet);
-        }
+        public void OnPointerDown(Vector3 worldHitPoint) => _missile = _aimController.CreateMissile(Planet.PlanetData.WeaponType, Planet, GetAimPoint(worldHitPoint));
 
-        public void OnPointerStay(Vector3 worldHitPoint)
-        {
-            _aimController.AimAt(_missile, _transformer.Transform(worldHitPoint));
-        }
+        public void OnPointerStay(Vector3 worldHitPoint) => _aimController.AimAt(_missile, GetAimPoint(worldHitPoint));
+
+        private Vector3 GetAimPoint(Vector3 worldHitPoint) => _transformer.Transform(worldHitPoint);
 
         public void OnPointerUp(Vector3 worldHitPoint)
         {

@@ -12,7 +12,7 @@ namespace Orbitality
         [UsedImplicitly]
         void OnCollisionEnter2D(Collision2D collision2D)
         {
-            Debug.Log("OnCollisionEnter2D");
+            //Debug.Log("OnCollisionEnter2D");
             Entered?.Invoke(this, collision2D);
         }
 
