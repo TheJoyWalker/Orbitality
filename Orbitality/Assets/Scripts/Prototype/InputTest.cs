@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class InputManager : MonoBehaviour
+public class InputTest : MonoBehaviour
 {
     [SerializeField] private Camera _camera;
     [SerializeField] private MissileLauncher _missileLauncher;

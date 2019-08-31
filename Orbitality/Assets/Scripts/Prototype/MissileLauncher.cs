@@ -26,6 +26,12 @@ public class MissileLauncher : MonoBehaviour
         var targetPosition = localPointerPosition.normalized * _circleCollider2D.radius;
         _currentMissile.localPosition = targetPosition;
         _currentMissile.up = (worldPoint - _currentMissile.position).normalized;
+
+        //var direction = worldPoint - _currentMissile.position;
+        //_currentMissile.rotation = Quaternion.FromToRotation(_currentMissile.up, transform.localPosition - localPointerPosition.normalized);
+        _currentMissile.localRotation = Quaternion.FromToRotation(Vector2.up, targetPosition - localPointerPosition.normalized);
+
+
         UnityEditor.Selection.activeGameObject = _currentMissile.gameObject;
 
 
