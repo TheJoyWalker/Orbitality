@@ -3,8 +3,8 @@
 public class AccelerationTest : MonoBehaviour
 {
     [SerializeField] private float _acceleration;
-    [SerializeField] private Vector2 _force;
-    [SerializeField] private readonly float _mass = 1;
+    //[SerializeField] private Vector2 _force;
+    [SerializeField] private float _mass = 1;
     [SerializeField] private Vector2 _velocity;
     [SerializeField] private float _drag = 0;
 
