@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 public class InputTest : MonoBehaviour
 {
     [SerializeField] private Camera _camera;
-    [SerializeField] private MissileLauncher _missileLauncher;
+    [SerializeField] private MissileLauncherTest _missileLauncherTest;
     [SerializeField] private Transform _hitCursor;
     private Coroutine _aimingCoroutine;
     void Update()
@@ -38,7 +38,7 @@ public class InputTest : MonoBehaviour
 
     private IEnumerator Aim()
     {
-        _missileLauncher.CreateMissile();
+        _missileLauncherTest.CreateMissile();
         RaycastHit hit;
         while (Input.GetMouseButton(0))
         {
@@ -52,10 +52,10 @@ public class InputTest : MonoBehaviour
             {
                 //Debug.Log($"hit: {pos}");
                 _hitCursor.position = hit.point;
-                _missileLauncher.AimAt(hit.point);
+                _missileLauncherTest.AimAt(hit.point);
             }
             yield return null;
         }
-        _missileLauncher.FireMissile();
+        _missileLauncherTest.FireMissile();
     }
 }

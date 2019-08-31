@@ -14,8 +14,8 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
+  - Background
+  - Rockets
   - 
   - 
   - 
@@ -45,6 +45,9 @@ TagManager:
   - name: Background
     uniqueID: 2670555763
     locked: 0
-  - name: Foreground
+  - name: Planets
     uniqueID: 1858589111
+    locked: 0
+  - name: Missiles
+    uniqueID: 2510019361
     locked: 0

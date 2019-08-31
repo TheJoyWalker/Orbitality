@@ -16,6 +16,7 @@ MonoBehaviour:
   MinOrbitDistanceX: 1.2
   MaxOrbitDistanceX: 7
   OrbitScaleY: 0.7
-  MaxAngularDisplacement: 1
+  MinAngularDisplacement: 0.4
+  MaxAngularDisplacement: 0.6
   MaxRadius: 1.6
   MinRadius: 1.3

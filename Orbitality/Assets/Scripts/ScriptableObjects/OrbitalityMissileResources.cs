@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Orbitality;
+using UnityEngine;
 
 namespace ScriptableObjects
 {
@@ -6,6 +7,7 @@ namespace ScriptableObjects
 
     public class OrbitalityMissileResources:ScriptableObject
     {
+        public Missile[] Missiles;
         public OrbitalityMissileSkin[] Skins;
     }
 }

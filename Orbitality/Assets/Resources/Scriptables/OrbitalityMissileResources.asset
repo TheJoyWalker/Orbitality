@@ -12,4 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c509a48a9c88c5b44b187d5aff52562a, type: 3}
   m_Name: OrbitalityMissileResources
   m_EditorClassIdentifier: 
+  Missiles:
+  - {fileID: 4514243960752281775, guid: 7f40d7904b29a4b4fa2c9e0ab5ac5e74, type: 3}
+  - {fileID: 4582629156127946063, guid: 4aaaeff099958bc4f9e3af9279851d95, type: 3}
+  - {fileID: 7445650012705026150, guid: f7235af70b83ba7469515f10f3fa2c37, type: 3}
   Skins: []

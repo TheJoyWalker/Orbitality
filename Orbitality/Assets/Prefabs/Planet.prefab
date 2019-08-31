@@ -143,3 +143,4 @@ MonoBehaviour:
   _spriteRenderer: {fileID: 4169452735672099628}
   _resources: {fileID: 0}
   _skinId: 0
+  _radius: 0

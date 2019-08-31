@@ -9,6 +9,7 @@ namespace Orbitality
             var planets = new PlanetData[count];
             var orbitRadiusVariance = settings.MaxOrbitDistanceX - settings.MinOrbitDistanceX;
             var radiusVariance = settings.MaxRadius - settings.MinRadius;
+            var displacementVariance = settings.MaxAngularDisplacement - settings.MinAngularDisplacement;
             var stepFactor = 1f / planets.Length;
             for (var i = 0; i < planets.Length; i++)
             {
@@ -17,7 +18,8 @@ namespace Orbitality
                 item.OrbitRadius = settings.MinOrbitDistanceX + orbitRadiusVariance * stepFactor * step;
                 item.Radius = settings.MinRadius + radiusVariance * stepFactor * step;
                 item.OrbitScaleX = settings.OrbitScaleY;
-                item.AngularDisplacement = stepFactor * step;
+                item.AngularDisplacement = settings.MinAngularDisplacement +
+                                              settings.MaxAngularDisplacement * stepFactor * step;
             }
 
             return planets;

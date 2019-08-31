@@ -3,12 +3,14 @@ using UnityEngine;
 
 namespace Orbitality
 {
-#if UNITY_EDITOR
-    [ExecuteInEditMode]
-#endif
-    public class PlanetView : MonoBehaviour
+    public class PlanetView : MonoBehaviour, IPlanetView
     {
-        [SerializeField] private SpriteRenderer _spriteRenderer;
+        public Vector3 Position
+        {
+            get => transform.localPosition;
+            set => transform.localPosition = value;
+        }
+        [SerializeField] private SpriteRenderer _spriteRenderer = default;
         [SerializeField] private OrbitalityPlanetResources _resources;
 
         public OrbitalityPlanetResources Resources
@@ -32,16 +34,6 @@ namespace Orbitality
         {
             get { return _radius; }
             set { _radius = value; }
-        }
-
-
-
-
-        void Update()
-        {
-#if UNITY_EDITOR
-            UpdateView();
-#endif
         }
 
         private void UpdateView()

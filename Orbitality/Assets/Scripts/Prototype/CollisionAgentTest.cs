@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CollisionAgent : MonoBehaviour
+public class CollisionAgentTest : MonoBehaviour
 {
     void OnCollisionEnter2D(Collision2D collision2D)
     {

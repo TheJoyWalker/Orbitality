@@ -29,4 +29,9 @@ public class WorldPauseButton : MonoBehaviour, IHitReceiver
     {
         
     }
+
+    public void OnPointerUp(Vector3 worldHitPoint)
+    {
+        
+    }
 }

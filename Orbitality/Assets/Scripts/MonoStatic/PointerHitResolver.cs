@@ -46,14 +46,25 @@ public class PointerHitResolver : MonoStaticUtility<PointerHitResolver>
             var pos = Input.mousePosition;
             pos.z = _camera.nearClipPlane;
 
-            //Debug.DrawRay(_camera.transform.position, _camera.ScreenToWorldPoint(pos) * 10, Color.black);
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out _hit))
+            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            //TODO: consider supporting 2d colliders
+            //RaycastHit2D hit2D = Physics2D.Raycast(ray.origin, ray.direction);
+            //if (hit2D.collider != null)
+            //{
+            //    hitAction(_hit);
+            //    hitAction = NotifyStay;
+            //}
+            if (Physics.Raycast(ray, out _hit))
             {
                 hitAction(_hit);
                 hitAction = NotifyStay;
             }
             yield return null;
         }
+
+        //TODO: consider using collection of hoovered objects
+        if (_hit.collider != null)
+            NotifyUp(_hit);
     }
     private static RaycastHit _hit;
     private static IHitReceiver _receiver;
@@ -68,5 +79,11 @@ public class PointerHitResolver : MonoStaticUtility<PointerHitResolver>
     {
         if (Receivers.TryGetValue(hit.collider, out _receiver))
             _receiver.OnPointerStay(hit.point);
+    }
+
+    private void NotifyUp(RaycastHit hit)
+    {
+        if (Receivers.TryGetValue(hit.collider, out _receiver))
+            _receiver.OnPointerUp(hit.point);
     }
 }

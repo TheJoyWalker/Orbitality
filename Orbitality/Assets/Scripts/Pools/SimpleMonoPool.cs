@@ -40,6 +40,7 @@ namespace Pools
         {
             if (item.GetType() != typeof(T))
                 throw new InvalidEnumArgumentException();
+            item.gameObject.SetActive(false);
             _free.Enqueue(item);
         }
 

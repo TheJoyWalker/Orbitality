@@ -1,11 +1,9 @@
-﻿using System;
-using Orbitality;
+﻿using ScriptableObjects;
 using UnityEngine;
 
-namespace ScriptableObjects
+namespace Assets.Scripts.Orbitality
 {
-    [CreateAssetMenu(fileName = "OrbitalitySettings", menuName = "ScriptableObjects/OrbitalitySettings")]
-    public class OrbitalitySettings : ScriptableObject, IPlanetGenerationSettings
+    public class OrbitalityMonoSettings : MonoBehaviour, IPlanetGenerationSettings
     {
         public int MaxPlanets;
 
@@ -27,27 +25,5 @@ namespace ScriptableObjects
 
         float IPlanetGenerationSettings.MinAngularDisplacement => MinAngularDisplacement;
         float IPlanetGenerationSettings.MaxAngularDisplacement => MaxAngularDisplacement;
-    }
-
-    public interface IPlanetGenerationSettings
-    {
-        float MaxOrbitDistanceX { get; }
-        float MinRadius { get; }
-        float MinOrbitDistanceX { get; }
-        float MaxRadius { get; }
-        float OrbitScaleY { get; }
-        float MinAngularDisplacement { get; }
-        float MaxAngularDisplacement { get;  }
-    }
-    [Serializable]
-    public class OrbitalityMissileSkin
-    {
-        public Sprite Sprite;
-    }
-
-    [Serializable]
-    public class OrbitalityPlanetSkin
-    {
-        public Sprite Sprite;
     }
 }
