@@ -33,8 +33,6 @@ namespace Orbitality
         {
             if (amount < 0)
                 throw new ArgumentException("Damage can not be < 0");
-            if (!IsAlive)
-                Debug.Log("hitting dead");
 
             _health = Mathf.Max(0, _health - amount);
             OnDamaged(new HealthAgentDamageArgs(_delegator, source, amount));
@@ -43,16 +41,11 @@ namespace Orbitality
         private void Die() => TakeDamage(_delegator, Health);
         protected virtual void OnDamaged(HealthAgentDamageArgs args)
         {
-            Debug.Log($"TookDamage: {args.Amount}, {_health} left");
             Damaged?.Invoke(args);
 
             if (!IsAlive)
                 OnDied(new HealthAgentDeathArgs(_delegator, args.Agressor, args.Amount));
         }
-        protected virtual void OnDied(HealthAgentDeathArgs args)
-        {
-            Debug.Log("Died");
-            Died?.Invoke(args);
-        }
+        protected virtual void OnDied(HealthAgentDeathArgs args) => Died?.Invoke(args);
     }
 }

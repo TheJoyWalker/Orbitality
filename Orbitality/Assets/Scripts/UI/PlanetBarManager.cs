@@ -3,6 +3,9 @@ using Orbitality;
 using Pools;
 using UnityEngine;
 
+#pragma warning disable 649
+// ReSharper disable FieldCanBeMadeReadOnly.Local
+
 namespace Assets.Scripts.UI
 {
     public class PlanetBarManager : MonoBehaviour

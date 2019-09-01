@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
-
+#pragma warning disable 649
+// ReSharper disable FieldCanBeMadeReadOnly.Local
 public class WorldPauseButton : MonoBehaviour, IHitReceiver
 {
     public Transform[] _pausedTransforms;

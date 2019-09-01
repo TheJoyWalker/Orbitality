@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
+#pragma warning disable 649
 
 namespace Orbitality
 {
     public class Missile : MonoBehaviour, ICollision2DAgent
     {
         [SerializeField] private Collider2D _collider2D;
-        public int Damage = 10;
         [SerializeField] private Collision2DAgent _collision2DAgent;
-        private Coroutine _dieInTime;
-        [SerializeField] private float _forwardAcceleration;
-        public bool _isAccelerating;
+        [SerializeField] private float _forwardAcceleration = default;
         [SerializeField] private Rigidbody2D _rigidbody2D;
+
+        public int Damage = 10;
+        private Coroutine _dieInTime;
+        
+
+        public bool _isAccelerating;
 
         public int Id; //TODO: resolve id properly
         public Planet Owner { get; set; }

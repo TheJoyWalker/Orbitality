@@ -1,11 +1,12 @@
 ﻿using Orbitality;
 using UnityEngine;
 using UnityEngine.UI;
+#pragma warning disable 649
 
 namespace Assets.Scripts.UI
 {
     public class PlanetBar : MonoBehaviour
-    {
+    { 
         [SerializeField] private Slider _slider;
         [SerializeField] private Text _cooldownText;
         [SerializeField] private RectTransform _rectTransform;

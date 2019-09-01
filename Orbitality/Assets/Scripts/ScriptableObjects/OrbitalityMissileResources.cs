@@ -9,5 +9,6 @@ namespace ScriptableObjects
     {
         public Missile[] Missiles;
         public OrbitalityMissileSkin[] Skins;
+        public ParticleExplosionController ExplosionPrefab;
     }
 }

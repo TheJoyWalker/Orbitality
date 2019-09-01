@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#pragma warning disable 649
+// ReSharper disable FieldCanBeMadeReadOnly.Local
 
 public class RigidbodyAccelerator : MonoBehaviour
 {

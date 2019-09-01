@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class TextureDayTimeBlender : MonoBehaviour
 {
+#pragma warning disable 649
     [SerializeField] private SpriteRenderer _target;
-    public float Speed = 1;
     [SerializeField] private Sprite[] _sprite;
+#pragma warning restore 649
+
+    public float Speed = 1;
     private float _timeDone;
     private float _lastOffset;
     private int _idx=-1;

@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
-
+#pragma warning disable 649
+// ReSharper disable FieldCanBeMadeReadOnly.Local
 public class InputTest : MonoBehaviour
 {
     [SerializeField] private Camera _camera;

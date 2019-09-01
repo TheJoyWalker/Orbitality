@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+#pragma warning disable 649
+// ReSharper disable FieldCanBeMadeReadOnly.Local
 
 namespace Assets.Scripts.Prototype
 {

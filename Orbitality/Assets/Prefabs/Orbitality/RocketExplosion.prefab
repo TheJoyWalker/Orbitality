@@ -600,7 +600,7 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     randomizeRotationDirection: 0
-    maxNumParticles: 1000
+    maxNumParticles: 300
     size3D: 0
     rotation3D: 0
     gravityModifier:
@@ -1049,7 +1049,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 0.011104181
-          value: 1
+          value: 0.4590168
           inSlope: 0.035680134
           outSlope: 0.035680134
           tangentMode: 0
@@ -1058,7 +1058,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 0.88805974
+          value: 0.34707654
           inSlope: -0.19647199
           outSlope: -0.19647199
           tangentMode: 0
@@ -4833,7 +4833,7 @@ GameObject:
   - component: {fileID: -6242480696268366964}
   - component: {fileID: 1595894805065477028}
   m_Layer: 0
-  m_Name: PlanetExplosion
+  m_Name: RocketExplosion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5350,7 +5350,7 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     randomizeRotationDirection: 0
-    maxNumParticles: 1000
+    maxNumParticles: 300
     size3D: 0
     rotation3D: 0
     gravityModifier:
@@ -5790,7 +5790,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0.63934326
           inSlope: 0
           outSlope: 0
           tangentMode: 0

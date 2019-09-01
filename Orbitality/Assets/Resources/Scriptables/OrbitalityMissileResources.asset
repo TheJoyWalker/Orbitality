@@ -17,3 +17,5 @@ MonoBehaviour:
   - {fileID: 4582629156127946063, guid: 4aaaeff099958bc4f9e3af9279851d95, type: 3}
   - {fileID: 7445650012705026150, guid: f7235af70b83ba7469515f10f3fa2c37, type: 3}
   Skins: []
+  ExplosionPrefab: {fileID: 1595894805065477028, guid: 5e6f49d1719565346a7f83a4322f3b2d,
+    type: 3}
