@@ -11,6 +11,8 @@ namespace Orbitality
         //    set => transform.localPosition = value;
         //}
 
+        public Vector3 BarPosition => transform.TransformPoint(Vector3.up * Radius * 0.5f);
+
         public Vector3 Position
         {
             get => _rigidbody2D.position;

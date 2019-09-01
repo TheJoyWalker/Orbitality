@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Assets.Scripts.Orbitality;
+using Assets.Scripts.UI;
 using JetBrains.Annotations;
 using Pools;
 using ScriptableObjects;
@@ -32,6 +33,7 @@ namespace Orbitality
         [SerializeField] private OrbitalityPlanetResources _planetResources = default;
         [SerializeField] private OrbitalityMissileResources _missileResources = default;
         #endregion
+        [SerializeField] private PlanetBarManager _planetBarManager;
 
         [SerializeField] private Collider _pointerInputCollider = default;
         private List<Planet> _planets = new List<Planet>();
@@ -78,17 +80,19 @@ namespace Orbitality
             }
 
             _planets = _planetGenerator.Generate(planetCount, _settings)
-                                       .Select((x, idx) => new Planet(x, 3f,//TODO: store cd's somewhere
-                                                                      _planetViewPool.Spawn(v =>
-                                                                                                {
-                                                                                                    v.transform.parent =
-                                                                                                        transform;
-                                                                                                    v.Resources =
-                                                                                                        _planetResources;
-                                                                                                    v.Radius = x.Radius;
-                                                                                                    v.SkinId =
-                                                                                                        skinIdxs[idx];
-                                                                                                }))).ToList();
+                                       .Select((x, idx) =>
+                                                   new Planet(x, _planetViewPool.Spawn(v => PreparePlanet(x, v, skinIdxs[idx])))).ToList();
+
+
+        }
+
+        private void PreparePlanet(PlanetData planet, PlanetView view, int skinIdx)
+        {
+            planet.Cooldown = 3f;//TODO: create weaponry info stuff
+            view.transform.parent = transform;
+            view.Resources = _planetResources;
+            view.Radius = planet.Radius;
+            view.SkinId = skinIdx;
         }
 
         [UsedImplicitly]
@@ -100,9 +104,18 @@ namespace Orbitality
             _timeDone += Time.fixedDeltaTime;
         }
         [UsedImplicitly]
-        private void OnEnable() => PointerHitResolver.Subscribe(_pointerInputCollider, _orbitalityUserInput);
+        private void OnEnable()
+        {
+            PointerHitResolver.Subscribe(_pointerInputCollider, _orbitalityUserInput);
+            _planetBarManager.AddRange(_planets);
+        }
+
         [UsedImplicitly]
-        private void OnDisable() => PointerHitResolver.Unsubscribe(_pointerInputCollider, _orbitalityUserInput);
+        private void OnDisable()
+        {
+            PointerHitResolver.Unsubscribe(_pointerInputCollider, _orbitalityUserInput);
+            _planetBarManager.RemoveRange(_planets);
+        }
     }
 
     public class OrbitalityAI
@@ -155,6 +168,7 @@ namespace Orbitality
                                              });
             missile.Die(20f);
             _missiles.Add(missile);
+            planet.RegisterShot();
             return missile;
         }
 

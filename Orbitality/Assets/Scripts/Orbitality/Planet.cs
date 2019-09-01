@@ -6,27 +6,31 @@ namespace Orbitality
     [SerializeField]
     public class Planet
     {
-        public event EventHandler<int> Damaged;
-        public event EventHandler<int> Healed;
-        public event EventHandler Died;
-        private readonly float _cooldown;
+        private const int InitialHealth = 100;
+        private readonly ChargeManager _chargeManager;
+
+        private int _health = InitialHealth;
+
+        public Planet(PlanetData data, IPlanetView view)
+        {
+            PlanetData = data;
+            View = view;
+            _chargeManager = new ChargeManager(data.Cooldown, true);
+        }
+
+        public Vector3 WorldPosition => View.Position;
 
         public Vector3 Position
         {
             get => View.Position;
             set => View.Position = value;
         }
-        public Planet(PlanetData data, float cooldown, IPlanetView view)
-        {
-            _cooldown = cooldown;
-            PlanetData = data;
-            View = view;
-        }
 
         [SerializeField] public PlanetData PlanetData { get; }
         public IPlanetView View { get; }
 
-        public int MaxHealth => 100;
+        public int MaxHealth => InitialHealth;
+
         public int Health
         {
             get => _health;
@@ -42,16 +46,21 @@ namespace Orbitality
             }
         }
 
-        private float _lastShotTime;
-        private int _health;
+        public bool IsPlayerControlled { get; set; }
 
-        public void RegisterShot() => _lastShotTime = Time.timeSinceLevelLoad;
+        public Vector3 BarPosition => View.BarPosition;
+        public event EventHandler<int> Damaged;
+        public event EventHandler<int> Healed;
+        public event EventHandler Died;
+
+
         public void TakeDamage(int amount) => Health -= amount;
 
-        public float Cooldown => Time.timeSinceLevelLoad - (_lastShotTime + _cooldown);
-        public bool CanShoot => Cooldown >= 0f;
 
-        private void Die() { OnDied(); }
+        private void Die()
+        {
+            OnDied();
+        }
 
         protected virtual void OnDamaged(int e)
         {
@@ -60,9 +69,15 @@ namespace Orbitality
                 Die();
         }
 
-        public bool IsPlayerControlled { get; set; }
-
         protected virtual void OnHealed(int e) => Healed?.Invoke(this, e);
         protected virtual void OnDied() => Died?.Invoke(this, EventArgs.Empty);
+
+#region cooldown
+        public void RegisterShot() => _chargeManager.Discharge();
+        public float ChargeTime => _chargeManager.ChargeTime;
+        public float Cooldown => _chargeManager.Cooldown;
+        public float ChargePercent => _chargeManager.ChargePercent;
+        public bool CanShoot => _chargeManager.IsCharged;
+#endregion
     }
 }

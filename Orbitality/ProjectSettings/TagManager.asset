@@ -16,7 +16,7 @@ TagManager:
   - 
   - Background
   - Rockets
-  - 
+  - OverAll
   - 
   - 
   - 
@@ -50,4 +50,10 @@ TagManager:
     locked: 0
   - name: Missiles
     uniqueID: 2510019361
+    locked: 0
+  - name: GameIndicators
+    uniqueID: 1776380135
+    locked: 0
+  - name: UI
+    uniqueID: 1086945709
     locked: 0

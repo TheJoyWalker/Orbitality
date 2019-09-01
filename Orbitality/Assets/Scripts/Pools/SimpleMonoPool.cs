@@ -25,7 +25,6 @@ namespace Pools
             obj.gameObject.SetActive(true);
             return obj;
         }
-
         public T Spawn(Action<T> prepareAction)
         {
             var obj = GetFreeOrNew();
