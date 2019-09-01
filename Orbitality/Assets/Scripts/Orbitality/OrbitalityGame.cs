@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Assets.Scripts.Orbitality;
+using JetBrains.Annotations;
 using Pools;
 using ScriptableObjects;
 using UnityEngine;
@@ -77,7 +78,7 @@ namespace Orbitality
                                                                                      }))).ToList();
         }
 
-
+        [UsedImplicitly]
         private void FixedUpdate()
         {
             foreach (var planet in _planets)
@@ -85,18 +86,9 @@ namespace Orbitality
 
             _timeDone += Time.fixedDeltaTime;
         }
-
-        private int GetFreeSkinId()
-        {
-            //todo: consider this later
-            var freeSkins = _planetResources.Skins.Where((skin, idx) =>
-                                                         {
-                                                             return _planets.All(data => data.PlanetData.SkinId != idx);
-                                                         }).ToList();
-            return Random.Range(0, freeSkins.Count);
-        }
-
+        [UsedImplicitly]
         private void OnEnable() => PointerHitResolver.Subscribe(_pointerInputCollider, _orbitalityUserInput);
+        [UsedImplicitly]
         private void OnDisable() => PointerHitResolver.Unsubscribe(_pointerInputCollider, _orbitalityUserInput);
     }
 
