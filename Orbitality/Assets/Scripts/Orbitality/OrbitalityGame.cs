@@ -20,8 +20,9 @@ namespace Orbitality
         private OrbitalityUserInput _orbitalityUserInput;
         private WorldToLocalTransformer _transformer;
         private AimController _aimController;
+        private OrbitalityAI _ai;
         #region Pools
-        private SimpleMonoPool<PlanetView> _planetPool;
+        private SimpleMonoPool<PlanetView> _planetViewPool;
         private Dictionary<int, SimpleMonoPool<Missile>> _missilePools = new Dictionary<int, SimpleMonoPool<Missile>>();
         #endregion
         #endregion
@@ -40,14 +41,22 @@ namespace Orbitality
         {
             Initialize();
             GeneratePlanets();
-            _orbitalityUserInput = new OrbitalityUserInput(_aimController, _transformer, _planets[2]);
+            SetPlayer();
             Debug.Log($"Create {_planets.Count} planets.");
+        }
+
+        private void SetPlayer()
+        {
+            var playerIdx = Random.Range(0, _planets.Count);
+            _planets[playerIdx].IsPlayerControlled = true;
+            _orbitalityUserInput = new OrbitalityUserInput(_aimController, _transformer, _planets[playerIdx]);
         }
 
         private void Initialize()
         {
             _transformer = new WorldToLocalTransformer(transform);
-            _planetPool = new SimpleMonoPool<PlanetView>(_planetResources.Prefab);
+            _planetViewPool = new SimpleMonoPool<PlanetView>(_planetResources.Prefab);
+            _ai = new OrbitalityAI();
             for (var i = 0; i < _missileResources.Missiles.Length; i++)
             {
                 _missilePools[i] = new SimpleMonoPool<Missile>(_missileResources.Missiles[i]);
@@ -69,13 +78,17 @@ namespace Orbitality
             }
 
             _planets = _planetGenerator.Generate(planetCount, _settings)
-                                       .Select((x, idx) => new Planet(x, _planetPool.Spawn(v =>
-                                                                                     {
-                                                                                         v.transform.parent = transform;
-                                                                                         v.Resources = _planetResources;
-                                                                                         v.Radius = x.Radius;
-                                                                                         v.SkinId = skinIdxs[idx];
-                                                                                     }))).ToList();
+                                       .Select((x, idx) => new Planet(x, 3f,//TODO: store cd's somewhere
+                                                                      _planetViewPool.Spawn(v =>
+                                                                                                {
+                                                                                                    v.transform.parent =
+                                                                                                        transform;
+                                                                                                    v.Resources =
+                                                                                                        _planetResources;
+                                                                                                    v.Radius = x.Radius;
+                                                                                                    v.SkinId =
+                                                                                                        skinIdxs[idx];
+                                                                                                }))).ToList();
         }
 
         [UsedImplicitly]
@@ -83,13 +96,33 @@ namespace Orbitality
         {
             foreach (var planet in _planets)
                 planet.Position = _motionResolver.Resolve(planet.PlanetData, _timeDone, _settings);
-
+            _ai.Tick(_planets, _aimController);
             _timeDone += Time.fixedDeltaTime;
         }
         [UsedImplicitly]
         private void OnEnable() => PointerHitResolver.Subscribe(_pointerInputCollider, _orbitalityUserInput);
         [UsedImplicitly]
         private void OnDisable() => PointerHitResolver.Unsubscribe(_pointerInputCollider, _orbitalityUserInput);
+    }
+
+    public class OrbitalityAI
+    {
+        //todo: optimize to reduce GC
+        public void Tick(List<Planet> planets, AimController aimController)
+        {
+            foreach (var planet in planets.Where(x => x.CanShoot && !x.IsPlayerControlled))
+            {
+                aimController.Fire(planet.PlanetData.WeaponType, planet, FindAim(planet, planets).Position);
+                planet.RegisterShot();
+            }
+        }
+
+        private Planet FindAim(Planet planet, List<Planet> planets)
+        {
+            //todo: optimize target selection
+            return planets.Except(new[] { planet }).OrderBy(x => Vector2.Distance(x.Position, planet.Position))
+                               .FirstOrDefault();
+        }
     }
 
     public class WorldToLocalTransformer
@@ -131,6 +164,12 @@ namespace Orbitality
             missile.transform.localPosition = (Vector2)missile.Owner.Position +
                                               ((point - (Vector2)missile.Owner.Position).normalized * missile.Owner.PlanetData.Radius * .6f);
             missile.LookAt(point);
+        }
+
+        public void Fire(int type, Planet planet, Vector2 aimPoint)
+        {
+            var missile = CreateMissile(type, planet, aimPoint);
+            Fire(missile);
         }
 
         public void Fire(Missile missile)
