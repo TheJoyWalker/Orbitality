@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd1e93faf86c588479dd116a2afd46bb, type: 3}
   m_Name: OrbitalityPlanetResources
   m_EditorClassIdentifier: 
+  Prefab: {fileID: 4169452736554175014, guid: 20a6aca37b6c59c4193c989fa5cfe280, type: 3}
+  ExplosionPrefab: {fileID: 1595894805065477028, guid: 4c9d0a363a896e84dafec718d2fd4ca6,
+    type: 3}
   Skins:
   - Sprite: {fileID: 21300000, guid: a4ca1cbe4b4e97c43aecb305a797ba5d, type: 3}
   - Sprite: {fileID: 21300000, guid: 6bdef88550024bf4889656155eb1e123, type: 3}
@@ -26,4 +29,3 @@ MonoBehaviour:
   - Sprite: {fileID: 21300000, guid: 81ecaf6e42e6f7d429ddce051f638691, type: 3}
   - Sprite: {fileID: 21300000, guid: 414e39860927b6c4daaa99c88c5e80e5, type: 3}
   - Sprite: {fileID: 21300000, guid: 40f295fe140bd1947afb964469df15c8, type: 3}
-  Prefab: {fileID: 4169452736554175014, guid: 20a6aca37b6c59c4193c989fa5cfe280, type: 3}

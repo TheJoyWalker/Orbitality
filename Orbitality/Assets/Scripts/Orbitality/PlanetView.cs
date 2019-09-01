@@ -11,6 +11,7 @@ namespace Orbitality
         //    set => transform.localPosition = value;
         //}
 
+        public Planet Owner { get; set; }
         public Vector3 BarPosition => transform.TransformPoint(Vector3.up * Radius * 0.5f);
 
         public Vector3 Position

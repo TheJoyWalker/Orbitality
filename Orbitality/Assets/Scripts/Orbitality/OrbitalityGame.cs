@@ -20,11 +20,12 @@ namespace Orbitality
         private readonly PlanetGenerator _planetGenerator = new PlanetGenerator();
         private OrbitalityUserInput _orbitalityUserInput;
         private WorldToLocalTransformer _transformer;
-        private AimController _aimController;
+        private FireController _fireController;
         private OrbitalityAI _ai;
         #region Pools
         private SimpleMonoPool<PlanetView> _planetViewPool;
         private Dictionary<int, SimpleMonoPool<Missile>> _missilePools = new Dictionary<int, SimpleMonoPool<Missile>>();
+        private SimpleMonoPool<ParticleExplosionController> _planetExplosionPool;
         #endregion
         #endregion
 
@@ -51,19 +52,20 @@ namespace Orbitality
         {
             var playerIdx = Random.Range(0, _planets.Count);
             _planets[playerIdx].IsPlayerControlled = true;
-            _orbitalityUserInput = new OrbitalityUserInput(_aimController, _transformer, _planets[playerIdx]);
+            _orbitalityUserInput = new OrbitalityUserInput(_fireController, _transformer, _planets[playerIdx]);
         }
 
         private void Initialize()
         {
             _transformer = new WorldToLocalTransformer(transform);
             _planetViewPool = new SimpleMonoPool<PlanetView>(_planetResources.Prefab);
+            _planetExplosionPool = new SimpleMonoPool<ParticleExplosionController>(_planetResources.ExplosionPrefab);
             _ai = new OrbitalityAI();
             for (var i = 0; i < _missileResources.Missiles.Length; i++)
             {
                 _missilePools[i] = new SimpleMonoPool<Missile>(_missileResources.Missiles[i]);
             }
-            _aimController = new AimController(_missilePools, transform);
+            _fireController = new FireController(_missilePools, transform);
         }
 
         private void GeneratePlanets()
@@ -81,12 +83,34 @@ namespace Orbitality
 
             _planets = _planetGenerator.Generate(planetCount, _settings)
                                        .Select((x, idx) =>
-                                                   new Planet(x, _planetViewPool.Spawn(v => PreparePlanet(x, v, skinIdxs[idx])))).ToList();
-
+                                                   new Planet(x, _planetViewPool.Spawn(v => PreparePlanetView(x, v, skinIdxs[idx])))).ToList();
+            foreach (var planet in _planets)
+            {
+                planet.Died += PlanetOnDied;
+            }
 
         }
 
-        private void PreparePlanet(PlanetData planet, PlanetView view, int skinIdx)
+        private void PlanetOnDied(HealthAgentDeathArgs args)
+        {
+            Debug.Log($"PlanetOnDied: {args.Victim}");
+            //todo:get rid of view here
+            var planet = (Planet)args.Victim;
+            var explosion = _planetExplosionPool.Spawn(x =>
+                                                       {
+                                                           x.transform.SetParent(transform);
+                                                           x.transform.position = planet.Position;
+                                                       });
+            explosion.Explode();
+            explosion.Completed += ExplosionOnCompleted;
+            _planetViewPool.Release((PlanetView)planet.View);
+            _planets.Remove(planet);
+            _planetBarManager.Remove(planet);
+        }
+
+        private void ExplosionOnCompleted(ParticleExplosionController obj) => _planetExplosionPool.Release(obj);
+
+        private void PreparePlanetView(PlanetData planet, PlanetView view, int skinIdx)
         {
             planet.Cooldown = 3f;//TODO: create weaponry info stuff
             view.transform.parent = transform;
@@ -100,7 +124,7 @@ namespace Orbitality
         {
             foreach (var planet in _planets)
                 planet.Position = _motionResolver.Resolve(planet.PlanetData, _timeDone, _settings);
-            _ai.Tick(_planets, _aimController);
+            _ai.Tick(_planets, _fireController);
             _timeDone += Time.fixedDeltaTime;
         }
         [UsedImplicitly]
@@ -121,11 +145,11 @@ namespace Orbitality
     public class OrbitalityAI
     {
         //todo: optimize to reduce GC
-        public void Tick(List<Planet> planets, AimController aimController)
+        public void Tick(List<Planet> planets, FireController fireController)
         {
             foreach (var planet in planets.Where(x => x.CanShoot && !x.IsPlayerControlled))
             {
-                aimController.Fire(planet.PlanetData.WeaponType, planet, FindAim(planet, planets).Position);
+                fireController.Fire(planet.PlanetData.WeaponType, planet, FindAim(planet, planets).Position);
                 planet.RegisterShot();
             }
         }
@@ -145,12 +169,14 @@ namespace Orbitality
         public Vector3 Transform(Vector3 worldPoint) => _targetSpaceTransform.InverseTransformPoint(worldPoint);
     }
 
-    public class AimController
+    public delegate void HitHandler(Planet source, Planet target, Missile missile);
+    public class FireController
     {
+        public event HitHandler Hit;
         private readonly IDictionary<int, SimpleMonoPool<Missile>> _pools;
         private readonly List<Missile> _missiles = new List<Missile>();
         private Transform _parent;
-        public AimController(IDictionary<int, SimpleMonoPool<Missile>> pools, Transform parent)
+        public FireController(IDictionary<int, SimpleMonoPool<Missile>> pools, Transform parent)
         {
             _pools = pools;
             _parent = parent;
@@ -207,31 +233,54 @@ namespace Orbitality
             var missile = (Missile)sender;
             missile.Entered += MissileOnEntered;
             missile.Die();
+            for (int i = 0; i < e.contactCount; i++)
+            {
+                //todo: split view and logic!
+                var planet = e.GetContact(i).collider.GetComponent<PlanetView>();
+                if (planet != null)
+                {
+                    planet.Owner.TakeDamage(missile.Owner, missile.Damage);
+                }
+            }
         }
     }
 
     public class OrbitalityUserInput : IHitReceiver
     {
-        private readonly AimController _aimController;
+        private readonly FireController _fireController;
         public Planet Planet { get; set; }//could this change in future?
         private WorldToLocalTransformer _transformer;
         private Missile _missile;
 
-        public OrbitalityUserInput(AimController aimController, WorldToLocalTransformer transformer, Planet planet)
+        public OrbitalityUserInput(FireController fireController, WorldToLocalTransformer transformer, Planet planet)
         {
-            _aimController = aimController;
+            _fireController = fireController;
             _transformer = transformer;
             Planet = planet;
         }
-        public void OnPointerDown(Vector3 worldHitPoint) => _missile = _aimController.CreateMissile(Planet.PlanetData.WeaponType, Planet, GetAimPoint(worldHitPoint));
+        public void OnPointerDown(Vector3 worldHitPoint)
+        {
+            //todo: player can shot without cooldown
+            //if (Planet.CanShoot)
+            _missile = _fireController.CreateMissile(Planet.PlanetData.WeaponType, Planet, GetAimPoint(worldHitPoint));
+        }
 
-        public void OnPointerStay(Vector3 worldHitPoint) => _aimController.AimAt(_missile, GetAimPoint(worldHitPoint));
+        public void OnPointerStay(Vector3 worldHitPoint)
+        {
+            if (_missile == null)
+                return;
+
+            _fireController.AimAt(_missile, GetAimPoint(worldHitPoint));
+        }
 
         private Vector3 GetAimPoint(Vector3 worldHitPoint) => _transformer.Transform(worldHitPoint);
 
         public void OnPointerUp(Vector3 worldHitPoint)
         {
-            _aimController.Fire(_missile);
+            if (_missile == null)
+                return;
+
+            _fireController.Fire(_missile);
             _missile = null;
         }
     }
@@ -247,5 +296,7 @@ namespace Orbitality
         public float Radius;
         public int SkinId;
         public int WeaponType;
+
+        public int MaxHealth = 100;
     }
 }

@@ -4,80 +4,59 @@ using UnityEngine;
 namespace Orbitality
 {
     [SerializeField]
-    public class Planet
+    public class Planet : IHealthAgent
     {
-        private const int InitialHealth = 100;
-        private readonly ChargeManager _chargeManager;
+        public bool IsPlayerControlled { get; set; }
 
-        private int _health = InitialHealth;
-
-        public Planet(PlanetData data, IPlanetView view)
-        {
-            PlanetData = data;
-            View = view;
-            _chargeManager = new ChargeManager(data.Cooldown, true);
-        }
+        public PlanetData PlanetData { get; }
 
         public Vector3 WorldPosition => View.Position;
-
         public Vector3 Position
         {
             get => View.Position;
             set => View.Position = value;
         }
-
-        [SerializeField] public PlanetData PlanetData { get; }
         public IPlanetView View { get; }
 
-        public int MaxHealth => InitialHealth;
 
-        public int Health
-        {
-            get => _health;
-            private set
-            {
-                var delta = value - _health;
-                _health = Mathf.Max(0, value);
-
-                if (delta < 0)
-                    OnDamaged(-delta);
-                else if (delta > 0)
-                    OnHealed(delta);
-            }
-        }
-
-        public bool IsPlayerControlled { get; set; }
-
+        private readonly ChargeManager _chargeManager;
+        private readonly HealthAgent _healthAgent;
         public Vector3 BarPosition => View.BarPosition;
-        public event EventHandler<int> Damaged;
-        public event EventHandler<int> Healed;
-        public event EventHandler Died;
 
-
-        public void TakeDamage(int amount) => Health -= amount;
-
-
-        private void Die()
+        public Planet(PlanetData data, IPlanetView view)
         {
-            OnDied();
+            PlanetData = data;
+            View = view;
+            view.Owner = this;
+            _healthAgent = new HealthAgent(this, data.MaxHealth);
+            _chargeManager = new ChargeManager(data.Cooldown, startCharged: false);
         }
 
-        protected virtual void OnDamaged(int e)
+        #region hp stuff
+        public int MaxHealth => _healthAgent.MaxHealth;
+        public int Health => _healthAgent.Health;
+        public bool IsAlive => _healthAgent.IsAlive;
+
+        public event IHealthAgentDamageHandler Damaged
         {
-            Damaged?.Invoke(this, e);
-            if (Health == 0)
-                Die();
+            add => _healthAgent.Damaged += value;
+            remove => _healthAgent.Damaged -= value;
+        }
+        public event IHealthAgentDeathHandler Died
+        {
+            add => _healthAgent.Died += value;
+            remove => _healthAgent.Died -= value;
         }
 
-        protected virtual void OnHealed(int e) => Healed?.Invoke(this, e);
-        protected virtual void OnDied() => Died?.Invoke(this, EventArgs.Empty);
+        public void TakeDamage(IHealthAgent source, int amount) => _healthAgent.TakeDamage(source, amount);
+        #endregion
 
-#region cooldown
+        #region cooldown
         public void RegisterShot() => _chargeManager.Discharge();
         public float ChargeTime => _chargeManager.ChargeTime;
         public float Cooldown => _chargeManager.Cooldown;
         public float ChargePercent => _chargeManager.ChargePercent;
         public bool CanShoot => _chargeManager.IsCharged;
-#endregion
+        #endregion
     }
 }

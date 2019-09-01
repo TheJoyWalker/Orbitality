@@ -10,5 +10,6 @@ namespace Orbitality
         float Radius { get; set; }
         OrbitalityPlanetResources Resources { get; set; }
         int SkinId { get; set; }
+        Planet Owner { get; set; }
     }
 }

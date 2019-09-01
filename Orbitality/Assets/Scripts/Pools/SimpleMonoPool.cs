@@ -37,6 +37,8 @@ namespace Pools
 
         public void Release(T item)
         {
+            if (item == null)
+                throw new ArgumentException("You can not release a null item");
             if (item.GetType() != typeof(T))
                 throw new InvalidEnumArgumentException();
             item.gameObject.SetActive(false);

@@ -53,6 +53,7 @@ namespace Assets.Scripts.UI
             if (idx == -1)
                 return false;
 
+            PlanetBarPool.Release(_planetBars[idx]);
             _planetBars.RemoveAt(idx);
             return true;
         }

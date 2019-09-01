@@ -7,6 +7,7 @@ namespace ScriptableObjects
     public class OrbitalityPlanetResources : ScriptableObject
     {
         public PlanetView Prefab;
+        public ParticleExplosionController ExplosionPrefab;
         public OrbitalityPlanetSkin[] Skins;
     }
 }
