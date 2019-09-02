@@ -11,12 +11,13 @@ namespace Pools
     {
 
     }
-    public class SimpleMonoPool<T> : IItemCollection<T> where T : MonoBehaviour
+    public class SimpleMonoPool<T> where T : MonoBehaviour
     {
         public SimpleMonoPool(T prefab) => _prefab = prefab;
 
         private readonly Queue<T> _free = new Queue<T>();
-        public readonly IList<T> _busy = new List<T>();
+        public readonly IList<T> Busy = new List<T>();//todo: should not give direct access
+
         private readonly T _prefab;
 
         public T Spawn()
@@ -25,6 +26,7 @@ namespace Pools
             obj.gameObject.SetActive(true);
             return obj;
         }
+
         public T Spawn(Action<T> prepareAction)
         {
             var obj = GetFreeOrNew();
@@ -33,7 +35,12 @@ namespace Pools
             return obj;
         }
 
-        private T GetFreeOrNew() => _free.Count > 0 ? _free.Dequeue() : Object.Instantiate(_prefab);
+        private T GetFreeOrNew()
+        {
+            var item = _free.Count > 0 ? _free.Dequeue() : Object.Instantiate(_prefab);
+            Busy.Add(item);
+            return item;
+        }
 
         public void Release(T item)
         {
@@ -43,9 +50,7 @@ namespace Pools
                 throw new InvalidEnumArgumentException();
             item.gameObject.SetActive(false);
             _free.Enqueue(item);
+            Busy.Remove(item);
         }
-
-        public IEnumerator<T> GetEnumerator() => _busy.GetEnumerator();
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

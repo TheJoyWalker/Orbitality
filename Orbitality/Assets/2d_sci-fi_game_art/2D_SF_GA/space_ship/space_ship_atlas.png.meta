@@ -1,0 +1,330 @@
+fileFormatVersion: 2
+guid: c483cccf255f1a841bfdfba715f4edda
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -4212410038683308988
+    second: space_ship_atlas_1
+  - first:
+      213: 4878531095326372317
+    second: space_ship_atlas_10
+  - first:
+      213: -3850560456103352167
+    second: space_ship_atlas_2
+  - first:
+      213: 3339658019600672519
+    second: space_ship_atlas_3
+  - first:
+      213: 3850500567541700551
+    second: space_ship_atlas_4
+  - first:
+      213: -6946604770655873034
+    second: space_ship_atlas_6
+  - first:
+      213: -7047673441550407881
+    second: space_ship_atlas_5
+  - first:
+      213: 2422571512731434545
+    second: space_ship_atlas_7
+  - first:
+      213: -5762029876422020435
+    second: space_ship_atlas_8
+  - first:
+      213: 3625852170614136544
+    second: space_ship_atlas_9
+  externalObjects: {}
+  serializedVersion: 10
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 1024
+  textureSettings:
+    serializedVersion: 2
+    filterMode: -1
+    aniso: 1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  platformSettings:
+  - serializedVersion: 2
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 1024
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: space_ship_atlas_1
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 816
+        width: 473
+        height: 206
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0f62b1c40cdc03c4e8bdb9f879cf65de
+      internalID: -4212410038683308988
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: space_ship_atlas_10
+      rect:
+        serializedVersion: 2
+        x: 531
+        y: 828
+        width: 474
+        height: 194
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d52735b76b939a745b7d50526eae01c9
+      internalID: 4878531095326372317
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: space_ship_atlas_2
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 618
+        width: 475
+        height: 193
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 890d2590cbef48a4f97c6e9a68eeb2ba
+      internalID: -3850560456103352167
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: space_ship_atlas_3
+      rect:
+        serializedVersion: 2
+        x: 527
+        y: 636
+        width: 477
+        height: 176
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d77e68a92aa350e49a68211b2b2531e8
+      internalID: 3339658019600672519
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: space_ship_atlas_4
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 436
+        width: 480
+        height: 164
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e4c04ad4cb4eb424bb7afd8bd9cd80f0
+      internalID: 3850500567541700551
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: space_ship_atlas_6
+      rect:
+        serializedVersion: 2
+        x: 524
+        y: 431
+        width: 484
+        height: 170
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7416bdcebc52ab84b9c0dc102ba72e73
+      internalID: -6946604770655873034
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: space_ship_atlas_5
+      rect:
+        serializedVersion: 2
+        x: 13
+        y: 224
+        width: 481
+        height: 168
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d11fe0b10b7c6684b96efd52bb7b5f11
+      internalID: -7047673441550407881
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: space_ship_atlas_7
+      rect:
+        serializedVersion: 2
+        x: 527
+        y: 224
+        width: 481
+        height: 168
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e427dd00f4d1e445a2b243d16750b8b
+      internalID: 2422571512731434545
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: space_ship_atlas_8
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 30
+        width: 478
+        height: 163
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6cf80d43fb957aa4481e47b8378ef2f7
+      internalID: -5762029876422020435
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: space_ship_atlas_9
+      rect:
+        serializedVersion: 2
+        x: 530
+        y: 20
+        width: 476
+        height: 173
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7387a628c85f5cd45bcf1d74ef2dcbc6
+      internalID: 3625852170614136544
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

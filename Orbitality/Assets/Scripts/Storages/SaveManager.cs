@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -8,7 +10,9 @@ namespace Assets.Scripts.Storages
 {
     public class SaveManager<T>
     {
-        private readonly string _savePath = Path.Combine(Application.persistentDataPath, "Saves");
+        public SaveManager() => _savePath = Path.Combine(Application.persistentDataPath, "Saves");
+
+        private readonly string _savePath;
         public string GetDefaultSaveName() => DateTime.Now.ToFileTime().ToString();
 
         public IEnumerable<string> GetSaves()
@@ -26,6 +30,7 @@ namespace Assets.Scripts.Storages
             File.WriteAllText(GetFilePath(saveName), stringData);
         }
 
+        public T LoadLast() => Load(GetSaves().Last());
         public T Load(string saveName) => JsonConvert.DeserializeObject<T>(File.ReadAllText(GetFilePath(saveName)));
         public void RemoveAll()
         {
@@ -40,6 +45,14 @@ namespace Assets.Scripts.Storages
         {
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
+        }
+
+        public string GetDisplayName(string save)
+        {
+            var displayName = Path.GetFileName(save);
+            if (long.TryParse(displayName, out var ticks))
+                displayName = DateTime.FromFileTime(ticks).ToString(CultureInfo.CurrentCulture);
+            return displayName;
         }
     }
 }

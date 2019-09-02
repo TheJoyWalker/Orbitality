@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Assets.Scripts.Orbitality;
-using Assets.Scripts.UI;
+using UI;
 using JetBrains.Annotations;
+using Orbitality.Saves;
 using Pools;
 using ScriptableObjects;
 using UnityEngine;
@@ -18,10 +19,19 @@ namespace Orbitality
         #region Utility
         private readonly PlanetMotionResolver _motionResolver = new PlanetMotionResolver();
         private readonly PlanetGenerator _planetGenerator = new PlanetGenerator();
-        private OrbitalityUserInput _orbitalityUserInput;
+        private OrbitalityUserMissileInput _orbitalityUserMissileInput;
         private WorldToLocalTransformer _transformer;
         private FireController _fireController;
         private OrbitalityAI _ai;
+
+        #region Saves
+        private OrbitalitySaveBuilder _saveBuilder = new OrbitalitySaveBuilder();
+
+        public OrbitalitySave GetSave() =>
+            _saveBuilder.Build(_planets, _fireController.GetActiveMissiles().ToArray(), _timeDone, _planets.FindIndex(x => x.IsPlayerControlled));
+        #endregion
+
+
         #region Pools
         private SimpleMonoPool<PlanetView> _planetViewPool;
         private Dictionary<int, SimpleMonoPool<Missile>> _missilePools = new Dictionary<int, SimpleMonoPool<Missile>>();
@@ -86,9 +96,17 @@ namespace Orbitality
                                                    new Planet(x, _planetViewPool.Spawn(v => PreparePlanetView(x, v, skinIdxs[idx])))).ToList();
             foreach (var planet in _planets)
             {
+                planet.PlanetData.SkinId = planet.View.SkinId; //todo:planet is stored twice, reconsider this
                 planet.Died += PlanetOnDied;
             }
+        }
 
+        public void Load(OrbitalitySave save)
+        {
+            _planets = save.Planets.Select(x => new Planet(x.PlanetData,
+                                                           _planetViewPool.Spawn((v) => PreparePlanetView(x.PlanetData, v, x.PlanetData.SkinId))))
+                           .ToList();
+            _fireController.Load(_planets, save.Missiles);
         }
 
         private void PreparePlanetView(PlanetData planet, PlanetView view, int skinIdx)
@@ -104,7 +122,7 @@ namespace Orbitality
         {
             var playerIdx = Random.Range(0, _planets.Count);
             _planets[playerIdx].IsPlayerControlled = true;
-            _orbitalityUserInput = new OrbitalityUserInput(_fireController, _transformer, _planets[playerIdx]);
+            _orbitalityUserMissileInput = new OrbitalityUserMissileInput(_fireController, _transformer, _planets[playerIdx]);
         }
 
         private void PlanetOnDied(HealthAgentDeathArgs args)
@@ -113,26 +131,48 @@ namespace Orbitality
             //todo:get rid of view here
             var planet = (Planet)args.Victim;
             var explosion = _planetExplosionPool.Spawn(x =>
-                                                       {
-                                                           x.transform.SetParent(transform);
-                                                           x.transform.position = planet.Position;
-                                                       });
+            {
+                x.transform.SetParent(transform);
+                x.transform.position = planet.Position;
+            });
             Debug.Log($"Explode: {explosion.name}");
             explosion.Explode();
-            explosion.Completed += ExplosionOnCompleted;
+            explosion.Completed -= ExplosionOnCompleted;
+            RemovePlanet(planet);
+            CheckWinLoose(planet);
+        }
+
+        private void RemovePlanet(Planet planet)
+        {
             _planetViewPool.Release((PlanetView)planet.View);
             _planets.Remove(planet);
             _planetBarManager.Remove(planet);
-
-            CheckWinLoose(planet);
         }
+
+
+
+        //can't use Reset cuz it's taken by mono
+        private void Clear()
+        {
+            _fireController.Clear();
+
+            while (_planets.Count > 0)
+                RemovePlanet(_planets[0]);
+
+            while (_planetExplosionPool.Busy.Count > 0)
+            {
+                var explosion = _planetExplosionPool.Busy[0];
+                explosion.Completed -= ExplosionOnCompleted;
+            }
+        }
+
 
         private void CheckWinLoose(Planet deceased)
         {
             if (deceased.IsPlayerControlled)
             {
                 Debug.LogError("loose");
-                OnLoose(); 
+                OnLoose();
             }
 
             if (_planets.Count == 1 && _planets[0].IsPlayerControlled)
@@ -146,7 +186,6 @@ namespace Orbitality
         protected virtual void OnWin() => Win?.Invoke(this);
         protected virtual void OnLoose() => Loose?.Invoke(this);
         private void ExplosionOnCompleted(ParticleExplosionController obj) => _planetExplosionPool.Release(obj);
-
         #region Monobehaviour methods
         [UsedImplicitly]
         private void FixedUpdate()
@@ -159,18 +198,16 @@ namespace Orbitality
         [UsedImplicitly]
         private void OnEnable()
         {
-            PointerHitResolver.Subscribe(_pointerInputCollider, _orbitalityUserInput);
+            PointerHitResolver.Subscribe(_pointerInputCollider, _orbitalityUserMissileInput);
             _planetBarManager.AddRange(_planets);
         }
 
         [UsedImplicitly]
         private void OnDisable()
         {
-            PointerHitResolver.Unsubscribe(_pointerInputCollider, _orbitalityUserInput);
+            PointerHitResolver.Unsubscribe(_pointerInputCollider, _orbitalityUserMissileInput);
             _planetBarManager.RemoveRange(_planets);
         }
         #endregion
-
-
     }
 }

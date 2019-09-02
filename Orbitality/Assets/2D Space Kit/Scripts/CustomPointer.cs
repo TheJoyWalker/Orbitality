@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections;
+// ReSharper disable All
+#pragma warning disable 618
 
 //NOTE: This is a script from my Spaceflight Controls package (For 3D games), a lot of this stuff isn't going to be relevant in a 2D space game, but I figured I'd include it anyway in the off chance it'll help someone.
 
