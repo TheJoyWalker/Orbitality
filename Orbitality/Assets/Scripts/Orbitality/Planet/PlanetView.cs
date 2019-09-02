@@ -1,5 +1,6 @@
 ﻿using ScriptableObjects;
 using UnityEngine;
+#pragma warning disable 649
 
 namespace Orbitality
 {
@@ -20,8 +21,8 @@ namespace Orbitality
         //    set => _rigidbody2D.MovePosition(value);
         //}
 
-        [SerializeField] private Rigidbody2D _rigidbody2D = default;
-        [SerializeField] private SpriteRenderer _spriteRenderer = default;
+        [SerializeField] private Rigidbody2D _rigidbody2D;
+        [SerializeField] private SpriteRenderer _spriteRenderer;
         [SerializeField] private OrbitalityPlanetResources _resources;
 
         public OrbitalityPlanetResources Resources

@@ -16,7 +16,11 @@ public class PointerHitResolver : MonoStaticUtility<PointerHitResolver>
 
 
     private static readonly Dictionary<Collider, IHitReceiver> Receivers = new Dictionary<Collider, IHitReceiver>();
-    public static void Subscribe(Collider collider, IHitReceiver receiver) => Receivers[collider] = receiver;
+    public static void Subscribe(Collider collider, IHitReceiver receiver)
+    {
+        Receivers[collider] = receiver;
+    }
+
     public static bool Unsubscribe(Collider collider, IHitReceiver receiver) => Receivers.Remove(collider);
 
     [UsedImplicitly]

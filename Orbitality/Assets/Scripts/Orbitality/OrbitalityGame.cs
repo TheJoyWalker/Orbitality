@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Assets.Scripts.Orbitality;
@@ -58,8 +59,20 @@ namespace Orbitality
         private void Awake()
         {
             Initialize();
+        }
+
+        public void StartGame()
+        {
+            EnsureActive();
+            Clear();
             GeneratePlanets();
             SetUpPlayer();
+        }
+
+        private void EnsureActive()
+        {
+            if (!gameObject.activeSelf)
+                gameObject.SetActive(true);
         }
 
         private void Initialize()
@@ -75,12 +88,13 @@ namespace Orbitality
                 _missilePools[i] = new SimpleMonoPool<Missile>(_missileResources.Missiles[i]);
             }
             _fireController = new FireController(_missilePools, _missileExplosionPool, transform);
+            _orbitalityUserMissileInput = new OrbitalityUserMissileInput(_fireController, _transformer);
         }
 
         private void GeneratePlanets()
         {
             var skinIdxsTemp = Enumerable.Range(0, _planetResources.Skins.Length - 1).ToList();
-            var planetCount = Random.Range(0, _settings.MaxPlanets);
+            var planetCount = Random.Range(_settings.MinPlanets, _settings.MaxPlanets);
             var skinIdxs = new int[planetCount];
 
             for (int i = 0; i < planetCount; i++)
@@ -98,10 +112,12 @@ namespace Orbitality
                 planet.PlanetData.SkinId = planet.View.SkinId; //todo:planet is stored twice, reconsider this
                 planet.Died += PlanetOnDied;
             }
+            _planetBarManager.AddRange(_planets);
         }
 
         public void Load(OrbitalitySave save)
         {
+            EnsureActive();
             OnDisable();
             Clear();
 
@@ -136,8 +152,9 @@ namespace Orbitality
         private void SetUpPlayer() => SetUpPlayer(Random.Range(0, _planets.Count));
         private void SetUpPlayer(int playerIdx)
         {
-            _planets[playerIdx].IsPlayerControlled = true;
-            _orbitalityUserMissileInput = new OrbitalityUserMissileInput(_fireController, _transformer, _planets[playerIdx]);
+            var planet = _planets[playerIdx];
+            planet.IsPlayerControlled = true;
+            _orbitalityUserMissileInput.Planet = planet;
         }
 
         private void PlanetOnDied(HealthAgentDeathArgs args)
@@ -188,13 +205,11 @@ namespace Orbitality
         {
             if (deceased.IsPlayerControlled)
             {
-                Debug.LogError("loose");
                 OnLoose();
             }
 
             if (_planets.Count == 1 && _planets[0].IsPlayerControlled)
             {
-                Debug.LogError("win");
                 OnWin();
             }
         }

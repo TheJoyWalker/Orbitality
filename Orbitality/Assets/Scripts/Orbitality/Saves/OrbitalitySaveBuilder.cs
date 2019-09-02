@@ -12,6 +12,11 @@ namespace Orbitality.Saves
         private readonly MissileSaveBuilder _missileBuilder = new MissileSaveBuilder();
         public OrbitalitySave Build(IList<Planet> planets, Missile[] missiles, float TimeDone, int playerIdx)
         {
+            if (playerIdx == -1)
+                throw new ArgumentException("playerIdx can not be -1");
+            if (planets.Count <= 1)
+                throw new ArgumentException("planets count should be > 2");
+
             OrbitalitySave save = new OrbitalitySave()
             {
                 Planets = planets.Select(x => _planetBuilder.Build(x)).ToArray(),

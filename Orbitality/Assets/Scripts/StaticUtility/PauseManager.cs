@@ -7,23 +7,23 @@ public class PauseManager : MonoStaticUtility<PauseManager>
     [RuntimeInitializeOnLoadMethod]
     public static void Initialize() => InitUnityObject(true);
 
-    private static bool _paused;
+    private static bool _userPaused;
 
     private static bool _appPaused;
 
     private static bool _isFocused = true;
 
-    private static bool _computedPaused;
+    private static bool _paused;
 
     /// <summary>
     ///     User pause requests
     /// </summary>
-    public static bool Paused
+    public static bool UserPaused
     {
-        get => _paused;
+        get => _userPaused;
         set
         {
-            _paused = value;
+            _userPaused = value;
             UpdatePauseChanged();
         }
     }
@@ -54,19 +54,21 @@ public class PauseManager : MonoStaticUtility<PauseManager>
         }
     }
 
-    public static bool ComputedPaused
+    public static bool Paused
     {
-        get => _computedPaused;
+        get => _paused;
         set
         {
-            _computedPaused = value;
-            OnPauseChanged(value);
+            var saveValue = _paused == value;
+            _paused = value;
+            if (!saveValue)
+                OnPauseChanged(value);
         }
     }
 
     public static event EventHandler<bool> PauseChanged;
 
-    private static void UpdatePauseChanged() => ComputedPaused = !_paused && _isFocused && !_appPaused;
+    private static void UpdatePauseChanged() => Paused = UserPaused || AppPaused || !IsFocused;
 
 
     [UsedImplicitly]

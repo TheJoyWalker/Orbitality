@@ -8,9 +8,12 @@ namespace UI.Menu
 
     public class LoadMenu : MonoBehaviour
     {
-        [SerializeField] private OrbitalityGame Prefab;
+        [SerializeField] private OrbitalityGame Game;
         [SerializeField] private LoadLevelButton _levelButtonPrefab;
         [SerializeField] private Transform LevelList;
+        [SerializeField] private MainMenu _mainMenu;
+        [SerializeField] private RectTransform _menuBackground;
+
 
         //todo: think of a better binding
         private SaveManager _saveManager;
@@ -26,7 +29,6 @@ namespace UI.Menu
             Clear();
             foreach (var save in _saveManager.GetSaves())
             {
-                Debug.Log($"got a save{save}");
                 var displayName = _saveManager.GetDisplayName(save);
 
                 var button = Instantiate(_levelButtonPrefab, LevelList);
@@ -40,7 +42,11 @@ namespace UI.Menu
 
         private void LoadLevel(string objFileName)
         {
-            Debug.LogError("start loading here!");
+            Game.Load(_saveManager.Load(objFileName));
+            Hide();
+            _menuBackground.gameObject.SetActive(false);
+            PauseManager.UserPaused = false;
+
         }
 
         private void Clear()
@@ -54,6 +60,12 @@ namespace UI.Menu
                 Destroy(t.gameObject);
                 i--;
             }
+        }
+
+        public void OnCancel()
+        {
+            Hide();
+            _mainMenu.Show();
         }
 
         public void Show() => gameObject.SetActive(true);

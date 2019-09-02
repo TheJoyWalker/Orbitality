@@ -9,17 +9,16 @@ namespace Orbitality
         private WorldToLocalTransformer _transformer;
         private Missile _missile;
 
-        public OrbitalityUserMissileInput(FireController fireController, WorldToLocalTransformer transformer, Planet planet)
+        public OrbitalityUserMissileInput(FireController fireController, WorldToLocalTransformer transformer)
         {
             _fireController = fireController;
             _transformer = transformer;
-            Planet = planet;
         }
         public void OnPointerDown(Vector3 worldHitPoint)
         {
             //todo: player can shot without cooldown
-            //if (Planet.CanShoot)
-            _missile = _fireController.CreateMissile(Planet.PlanetData.WeaponType, Planet, GetAimPoint(worldHitPoint));
+            if (Planet != null && Planet.CanShoot)
+                _missile = _fireController.CreateMissile(Planet.PlanetData.WeaponType, Planet, GetAimPoint(worldHitPoint));
         }
 
         public void OnPointerStay(Vector3 worldHitPoint)

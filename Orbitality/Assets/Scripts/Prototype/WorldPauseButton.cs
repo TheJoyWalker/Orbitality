@@ -24,7 +24,7 @@ public class WorldPauseButton : MonoBehaviour, IHitReceiver
         }
     }
 
-    public void OnPointerDown(Vector3 worldHitPoint) => PauseManager.Paused = !PauseManager.Paused;
+    public void OnPointerDown(Vector3 worldHitPoint) => PauseManager.UserPaused = !PauseManager.UserPaused;
 
     public void OnPointerStay(Vector3 worldHitPoint)
     {
