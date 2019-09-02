@@ -28,6 +28,7 @@ namespace Orbitality
         public bool _isAccelerating;
 
         public int TypeId; //TODO: resolve id properly
+        public Vector2 TargetPoint;
         public Planet Owner { get; set; }
 
         public event EventHandler<Collision2D> Entered;

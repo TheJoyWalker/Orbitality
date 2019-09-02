@@ -37,20 +37,25 @@ namespace Pools
 
         private T GetFreeOrNew()
         {
-            var item = _free.Count > 0 ? _free.Dequeue() : Object.Instantiate(_prefab);
-            Busy.Add(item);
-            return item;
+            //todo: temp hack, investigate
+            return Object.Instantiate(_prefab);
+            //var item = _free.Count > 0 ? _free.Dequeue() : Object.Instantiate(_prefab);
+            //Busy.Add(item);
+            //return item;
         }
 
         public void Release(T item)
         {
-            if (item == null)
-                throw new ArgumentException("You can not release a null item");
-            if (item.GetType() != typeof(T))
-                throw new InvalidEnumArgumentException();
-            item.gameObject.SetActive(false);
-            _free.Enqueue(item);
-            Busy.Remove(item);
+            //todo: temp hack, investigate
+            if (item != null)
+                Object.Destroy(item.gameObject);
+            //if (item == null)
+            //    throw new ArgumentException("You can not release a null item");
+            //if (item.GetType() != typeof(T))
+            //    throw new InvalidEnumArgumentException();
+            //item.gameObject.SetActive(false);
+            //_free.Enqueue(item);
+            //Busy.Remove(item);
         }
     }
 }

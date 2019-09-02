@@ -5,6 +5,7 @@ namespace Assets.Scripts.Orbitality
 {
     public class OrbitalityMonoSettings : MonoBehaviour, IPlanetGenerationSettings
     {
+        public int MinPlanets;
         public int MaxPlanets;
 
         public float MinOrbitDistanceX;
@@ -25,5 +26,6 @@ namespace Assets.Scripts.Orbitality
 
         float IPlanetGenerationSettings.MinAngularDisplacement => MinAngularDisplacement;
         float IPlanetGenerationSettings.MaxAngularDisplacement => MaxAngularDisplacement;
+
     }
 }

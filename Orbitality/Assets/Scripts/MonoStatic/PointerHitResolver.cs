@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 
 /// <summary>
@@ -40,6 +41,11 @@ public class PointerHitResolver : MonoStaticUtility<PointerHitResolver>
 
     private IEnumerator PointerDownEnumerator()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            yield break;
+        }
+
         Action<RaycastHit> hitAction = NotifyHit;
         while (Input.GetMouseButton(0))
         {

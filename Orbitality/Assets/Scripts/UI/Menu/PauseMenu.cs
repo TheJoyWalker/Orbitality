@@ -11,6 +11,12 @@ namespace UI.Menu
         private SaveManager _saveManager;
         public void Awake() => _saveManager=new SaveManager();
         public void Save() => _saveManager.Save(_orbitalityGame.GetSave());
-        public void Load() => _orbitalityGame.Load(_saveManager.LoadLast());
+        public void Load()
+        {
+            Debug.Log("try loading last");
+            var orbitalitySave = _saveManager.LoadLast();
+            Debug.Log("game loading save");
+            _orbitalityGame.Load(orbitalitySave);
+        }
     }
 }

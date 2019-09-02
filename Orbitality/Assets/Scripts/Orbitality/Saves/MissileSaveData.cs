@@ -54,5 +54,7 @@ namespace Orbitality.Saves
         public SerializableVector2 Velocity;
         public float AngularVelocity;
         public int Damage;
+
+        public SerializableVector2 TargetPoint;
     }
 }

@@ -5,20 +5,20 @@ namespace Orbitality
 {
     public class PlanetView : MonoBehaviour, IPlanetView
     {
-        //public Vector3 Position
-        //{
-        //    get => transform.localPosition;
-        //    set => transform.localPosition = value;
-        //}
+        public Vector3 Position
+        {
+            get => transform.localPosition;
+            set => transform.localPosition = value;
+        }
 
         public Planet Owner { get; set; }
         public Vector3 BarPosition => transform.TransformPoint(Vector3.up * Radius * 0.5f);
 
-        public Vector3 Position
-        {
-            get => _rigidbody2D.position;
-            set => _rigidbody2D.MovePosition(value);
-        }
+        //public Vector3 Position
+        //{
+        //    get => _rigidbody2D.position;
+        //    set => _rigidbody2D.MovePosition(value);
+        //}
 
         [SerializeField] private Rigidbody2D _rigidbody2D = default;
         [SerializeField] private SpriteRenderer _spriteRenderer = default;
@@ -39,7 +39,6 @@ namespace Orbitality
             set
             {
                 _skinId = value;
-                Debug.Log($"set skin idx {value}");
                 UpdateView();
             }
         }

@@ -45,10 +45,10 @@ namespace Orbitality
 
         public void AimAt(Missile missile, Vector2 point)
         {
-            //missile.transform.localPosition = missile.Owner.Position;
             missile.transform.localPosition = (Vector2)missile.Owner.Position +
                                               ((point - (Vector2)missile.Owner.Position).normalized * missile.Owner.PlanetData.Radius * .6f);
             missile.LookAt(point);
+            missile.TargetPoint = point;
         }
 
         public void Fire(int type, Planet planet, Vector2 aimPoint)
@@ -121,7 +121,14 @@ namespace Orbitality
             foreach (var save in missileSaves)
             {
                 var planet = planets[save.OwnerIndex];
-                _missilePools[save.TypeId].Spawn(x => PrepareMissile(save.TypeId, planet, save.Position, x));
+                var missile = _missilePools[save.TypeId]
+                    .Spawn(x => PrepareMissile(save.TypeId, planet, save.Position, x));
+                AimAt(missile, save.TargetPoint);
+                missile.transform.localPosition = (Vector2)save.Position;
+                missile.transform.localRotation = save.Rotation;
+                missile.Rigidbody2D.velocity = save.Velocity;
+                missile.Rigidbody2D.angularVelocity = save.AngularVelocity;
+                Fire(missile);
             }
         }
     }

@@ -60,7 +60,6 @@ namespace Orbitality
             Initialize();
             GeneratePlanets();
             SetUpPlayer();
-            Debug.Log($"Create {_planets.Count} planets.");
         }
 
         private void Initialize()
@@ -81,7 +80,7 @@ namespace Orbitality
         private void GeneratePlanets()
         {
             var skinIdxsTemp = Enumerable.Range(0, _planetResources.Skins.Length - 1).ToList();
-            var planetCount = _settings.MaxPlanets;
+            var planetCount = Random.Range(0, _settings.MaxPlanets);
             var skinIdxs = new int[planetCount];
 
             for (int i = 0; i < planetCount; i++)
@@ -103,24 +102,40 @@ namespace Orbitality
 
         public void Load(OrbitalitySave save)
         {
+            OnDisable();
+            Clear();
+
+            _timeDone = save.Time;
+            //var view = Instantiate(_planetViewPool._prefab);
+            //_planets = save.Planets.Select(x => new Planet(x.PlanetData, PreparePlanetView(x.PlanetData, view, x.PlanetData.SkinId)))
+            //               .ToList();
+
             _planets = save.Planets.Select(x => new Planet(x.PlanetData,
                                                            _planetViewPool.Spawn((v) => PreparePlanetView(x.PlanetData, v, x.PlanetData.SkinId))))
                            .ToList();
+            UpdatePlanetPositions();
+
+            SetUpPlayer(save.PlayerIdx);
+
+
             _fireController.Load(_planets, save.Missiles);
+            OnEnable();
+            return;
         }
 
-        private void PreparePlanetView(PlanetData planet, PlanetView view, int skinIdx)
+        private PlanetView PreparePlanetView(PlanetData planet, PlanetView view, int skinIdx)
         {
             planet.Cooldown = 3f;//TODO: create weaponry info stuff
             view.transform.parent = transform;
             view.Resources = _planetResources;
             view.Radius = planet.Radius;
             view.SkinId = skinIdx;
+            return view;
         }
 
-        private void SetUpPlayer()
+        private void SetUpPlayer() => SetUpPlayer(Random.Range(0, _planets.Count));
+        private void SetUpPlayer(int playerIdx)
         {
-            var playerIdx = Random.Range(0, _planets.Count);
             _planets[playerIdx].IsPlayerControlled = true;
             _orbitalityUserMissileInput = new OrbitalityUserMissileInput(_fireController, _transformer, _planets[playerIdx]);
         }
@@ -144,11 +159,13 @@ namespace Orbitality
 
         private void RemovePlanet(Planet planet)
         {
+            planet.Died -= PlanetOnDied;
+
             _planetViewPool.Release((PlanetView)planet.View);
+            _planetBarManager.Remove(planet);
             _planets.Remove(planet);
             _planetBarManager.Remove(planet);
         }
-
 
 
         //can't use Reset cuz it's taken by mono
@@ -190,11 +207,17 @@ namespace Orbitality
         [UsedImplicitly]
         private void FixedUpdate()
         {
-            foreach (var planet in _planets)
-                planet.Position = _motionResolver.Resolve(planet.PlanetData, _timeDone, _settings);
+            UpdatePlanetPositions();
             _ai.Tick(_planets, _fireController);
             _timeDone += Time.fixedDeltaTime;
         }
+
+        private void UpdatePlanetPositions()
+        {
+            foreach (var planet in _planets)
+                planet.Position = _motionResolver.Resolve(planet.PlanetData, _timeDone, _settings);
+        }
+
         [UsedImplicitly]
         private void OnEnable()
         {

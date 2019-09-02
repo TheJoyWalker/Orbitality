@@ -14,6 +14,7 @@ namespace Orbitality.Saves
                 Damage = missile.Damage,
                 Position = (Vector2)missile.transform.localPosition,
                 Rotation = missile.transform.localRotation,
+                TargetPoint = missile.TargetPoint,
                 Velocity = missile.Rigidbody2D.velocity,
                 AngularVelocity = missile.Rigidbody2D.angularVelocity,
             };
